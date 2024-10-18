@@ -28,7 +28,7 @@ public class ShadesMockServerApp {
         wireMockServer.start();
         while(iterator.hasNext()) {
             ApplicationConfig.DownstreamConfig.DeviceConfig device = iterator.next();
-            wireMockServer.stubFor(get(urlEqualTo("/get_shade_state/" + device.getMac().replaceAll(":", "%3A")))
+            wireMockServer.stubFor(get(urlEqualTo(downstreamConfig.getApi().getShade().getGetShadeState().getPath().replace("{mac}", device.getMac().replaceAll(":", "%3A"))))
                 .inScenario("reopen" + device.getName())
                 .whenScenarioStateIs(STARTED)
                 .willReturn(aResponse()
@@ -37,7 +37,7 @@ public class ShadesMockServerApp {
                     .withBody("{\"result\":\"success\",\"version\":\"2.3.2\",\"mac\":\"" + device.getMac() + "\",\"position\":0,\"closed_upwards\":true}")
                     .withHeader("Content-Type", "application/json"))
                 .willSetStateTo("adjustedState"));
-            wireMockServer.stubFor(get(urlEqualTo("/get_shade_state/" + device.getMac().replaceAll(":", "%3A")))
+            wireMockServer.stubFor(get(urlEqualTo(downstreamConfig.getApi().getShade().getGetShadeState().getPath().replace("{mac}", device.getMac().replaceAll(":", "%3A"))))
                 .inScenario("reopen" + device.getName())
                 .whenScenarioStateIs("adjustedState")
                 .willReturn(aResponse()
