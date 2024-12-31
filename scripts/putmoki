@@ -1,0 +1,4 @@
+# curl --location --request PUT "http://localhost:8083/api/public/4963/devices/16600?publicApiKey=6048c8b7-5d39-4a60-ae5f-73da348d6c8b" \
+curl --location --request PUT "http://localhost:8083/api/public/4963/devices/16600" \
+--header 'Content-Type: application/json' \
+--data-raw "{ \"Position\": $1 }"

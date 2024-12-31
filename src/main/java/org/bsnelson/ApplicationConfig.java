@@ -41,18 +41,21 @@ public class ApplicationConfig {
     @Data
     @NoArgsConstructor
     public static class DownstreamConfig {
-        private String connectIp;
+        private SomaConfiguration soma;
+        private SunsaConfiguration sunsa;
         private ApiConfig api;
         private List<DeviceConfig> devices;
+        private Integer retries;
 
         @Data
         @NoArgsConstructor
         public static class ApiConfig {
-            private ShadeApiConfig shade;
+            private SomaApiConfiguration soma;
+            private SunsaApiConfiguration sunsa;
 
             @Data
             @NoArgsConstructor
-            public static class ShadeApiConfig {
+            public static class SomaApiConfiguration {
                 private PathConfig listDevices;
                 private PathConfig openShade;
                 private PathConfig closeShade;
@@ -62,22 +65,44 @@ public class ApplicationConfig {
                 private PathConfig getShadeState;
                 private PathConfig getLightLevel;
                 private PathConfig getBatteryLevel;
+            }
 
-                @Data
-                @NoArgsConstructor
-                public static class PathConfig {
-                    private String path;
-                }
+            @Data
+            @NoArgsConstructor
+            public static class SunsaApiConfiguration {
+                private PathConfig listDevices;
+                private PathConfig setShadePosition;
             }
         }
 
         @Data
         @NoArgsConstructor
+        public static class SomaConfiguration {
+            private String connectIp;
+        }
+
+        @Data
+        @NoArgsConstructor
+        public static class SunsaConfiguration {
+            private String baseUrl;
+            private String apiKey;
+            private String idUser;
+        }
+
+        @Data
+        @NoArgsConstructor
         public static class DeviceConfig {
-            private String mac;
+            private String id;
+            private String type;
             private String name;
             private int seasonalDefault;
             private List<String> groups;
+        }
+
+        @Data
+        @NoArgsConstructor
+        public static class PathConfig {
+            private String path;
         }
     }
 }
