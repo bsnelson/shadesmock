@@ -22,6 +22,7 @@ dependencies {
     implementation("ch.qos.logback:logback-core:1.5.7")
     implementation("ch.qos.logback:logback-classic:1.5.7")
     implementation("org.yaml:snakeyaml:2.2")
+    implementation("org.json:json:20240303")
 
 //    implementation("org.wiremock:wiremock:3.9.1")
     implementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.1")

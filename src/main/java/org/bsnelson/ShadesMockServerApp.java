@@ -20,12 +20,14 @@ import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 public class ShadesMockServerApp {
     public static final String SEPER = ":";    
     public static final int DELAY = 3000;
+    public static final int SHORT_DELAY = 300;
+
     public static void main(String[] args) {
         log.info("Hello shadesmock!");
         ApplicationConfig appConfig = getConfig();
         ApplicationConfig.DownstreamConfig downstreamConfig = appConfig.getDownstream();
 
-        WireMockServer wireMockServer = new WireMockServer(options().port(8083)); //No-args constructor will start on port 8080, no HTTPS
+        WireMockServer wireMockServer = new WireMockServer(options().port(8083).extensions(new CustomResponseTransformer()));
         wireMockConfig().notifier(new ConsoleNotifier(true));
 
         wireMockServer.start();
@@ -84,14 +86,11 @@ public class ShadesMockServerApp {
             .whenScenarioStateIs(STARTED)
             .willReturn(aResponse()
                 .withStatus(200)
-                .withLogNormalRandomDelay(DELAY, 0.1)
+                .withLogNormalRandomDelay(SHORT_DELAY, 0.1)
+                .withTransformers("custom-response-transformer")
+                .withTransformerParameter("deviceName", device.getName())
+                .withTransformerParameter("deviceId", device.getId())
                 .withBody("{\"device\":{\"idDevice\":" + device.getId() + ",\"name\":\"" + device.getName() + "\",\"position\":100}}")
-//                .withBody("{\n" +
-//                        " \"device\": {" +
-//                        "  \"idDevice\": " + device.getId() + "\n" +
-//                        "  \"Name\": \"" + device.getName() + "\",\n" +
-//                        "  \"Position\": 100\n" +
-//                        " } }")
                 .withHeader("Content-Type", "application/json"))
             .willSetStateTo(STARTED));
     }

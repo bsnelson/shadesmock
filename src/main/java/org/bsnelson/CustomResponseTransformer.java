@@ -4,8 +4,7 @@ import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.extension.ResponseTransformer;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.Response;
-import com.github.tomakehurst.wiremock.http.ResponseDefinition;
-import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
+import org.json.JSONObject;
 
 public class CustomResponseTransformer extends ResponseTransformer {
 
@@ -18,7 +17,11 @@ public class CustomResponseTransformer extends ResponseTransformer {
         // Implement your logic to extract the field from the request body
         // For example, using a JSON library like Jackson or Gson
         // Here is a simple example assuming the field is directly in the request body
-        return requestBody; // Replace with actual extraction logic
+        JSONObject jsonObject = new JSONObject(requestBody);
+
+        // Extract the "position" field
+        int position = jsonObject.getInt("Position");
+        return Integer.toString(position); // Replace with actual extraction logic
     }
 
     @Override
@@ -30,10 +33,11 @@ public class CustomResponseTransformer extends ResponseTransformer {
     public Response transform(Request request, Response response, FileSource fileSource, Parameters parameters) {
         String requestBody = request.getBodyAsString();
         // Extract the field from the request body (assuming JSON format)
-        String extractedField = extractFieldFromRequestBody(requestBody);
+        String position = extractFieldFromRequestBody(requestBody);
 
+        String responseBody = "{\"device\":{\"idDevice\":" + parameters.getString("deviceId") + ",\"name\": \"" + parameters.getString("deviceName") + "\",\"position\":" + position + "}}";
         // Create a new response body with the extracted field
-        String responseBody = "{\"extractedField\":\"" + extractedField + "\"}";
+        //String responseBody = "{\"Position\":\"" + extractedField + "\"}";
 
         return Response.Builder.like(response)
                 .but()
