@@ -20,7 +20,7 @@ public class CustomResponseTransformer extends ResponseTransformer {
         JSONObject jsonObject = new JSONObject(requestBody);
 
         // Extract the "position" field
-        int position = jsonObject.getInt("Position");
+        int position = (((jsonObject.getInt("Position") + 9) / 10) * 10);
         return Integer.toString(position); // Replace with actual extraction logic
     }
 

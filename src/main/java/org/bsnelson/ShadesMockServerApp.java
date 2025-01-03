@@ -27,7 +27,10 @@ public class ShadesMockServerApp {
         ApplicationConfig appConfig = getConfig();
         ApplicationConfig.DownstreamConfig downstreamConfig = appConfig.getDownstream();
 
-        WireMockServer wireMockServer = new WireMockServer(options().port(8083).extensions(new CustomResponseTransformer()));
+        WireMockServer wireMockServer = new WireMockServer(options()
+                .port(8083)
+                .notifier(new ConsoleNotifier(true))
+                .extensions(new CustomResponseTransformer()));
         wireMockConfig().notifier(new ConsoleNotifier(true));
 
         wireMockServer.start();
@@ -56,7 +59,7 @@ public class ShadesMockServerApp {
             .filter(device -> device.getGroups().contains("Kitchen"))
             .forEach(device -> {
   //              setPosition(device, wireMockServer, downstreamConfig, false);
-                somaSetPositionTwo(device, wireMockServer, downstreamConfig, true);
+                somaSetPositionTwo(device, wireMockServer, downstreamConfig, false);
                 somaMockTwoSteps(device, wireMockServer, downstreamConfig);
             });
 
@@ -81,7 +84,7 @@ public class ShadesMockServerApp {
     private static void sunsaSetPosition(ApplicationConfig.DownstreamConfig.DeviceConfig device, WireMockServer wireMockServer, ApplicationConfig.DownstreamConfig downstreamConfig, ApplicationConfig appConfig, boolean makeFail) {
         wireMockServer.stubFor(put(urlMatching(downstreamConfig.getApi().getSunsa().getSetShadePosition().getPath()
             .replace("{idUser}", appConfig.getDownstream().getSunsa().getIdUser())
-            .replace("{idDevice}", device.getId())))
+            .replace("{idDevice}", device.getId()) + "\\?publicApiKey=.*"))
             .inScenario("sunsasetpos" + device.getName())
             .whenScenarioStateIs(STARTED)
             .willReturn(aResponse()
